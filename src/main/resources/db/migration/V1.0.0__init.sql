@@ -1,0 +1,3 @@
+CREATE TABLE TASK (id UUID, text VARCHAR(MAX), created_time TIMESTAMP, closed_time TIMESTAMP, closed BOOLEAN);
+CREATE TABLE NOTE (id UUID, text VARCHAR(MAX), created_time TIMESTAMP, task_id UUID);
+CREATE TABLE TASK_HISTORY_ENTRY (id UUID, task_event VARCHAR(MAX), date_time TIMESTAMP, task_id UUID)
