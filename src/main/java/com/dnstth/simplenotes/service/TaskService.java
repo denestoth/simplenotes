@@ -4,14 +4,12 @@ import com.dnstth.simplenotes.model.Note;
 import com.dnstth.simplenotes.model.Task;
 import com.dnstth.simplenotes.model.TaskEvent;
 import com.dnstth.simplenotes.model.TaskHistoryEntry;
+import com.dnstth.simplenotes.repository.NoteRepository;
 import com.dnstth.simplenotes.repository.TaskRepository;
 import com.dnstth.simplenotes.view.task.CreateTaskView;
 import com.dnstth.simplenotes.view.task.UpdateTaskView;
 import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Optional;
-import java.util.UUID;
+import java.util.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -20,6 +18,9 @@ public class TaskService {
 
   @Autowired
   private TaskRepository taskRepository;
+
+  @Autowired
+  NoteRepository noteRepository;
 
   public Task create(CreateTaskView view) {
     Task task = Task.builder()
@@ -91,4 +92,17 @@ public class TaskService {
     task.getTaskHistoryEntries().add(TaskHistoryEntry.builder().taskEvent(taskEvent).dateTime(LocalDateTime.now()).build());
   }
 
+  public Task addNote(UUID id, String taskId) {
+    Optional<Task> taskOptional = taskRepository.findById(id);
+    Optional<Note> noteOptional = noteRepository.findById(UUID.fromString(taskId));
+
+    if (taskOptional.isPresent() && noteOptional.isPresent()) {
+      Task task = taskOptional.get();
+      Note note = noteOptional.get();
+      task.getNotes().add(note);
+      return taskRepository.save(task);
+    }
+
+    return null;
+  }
 }

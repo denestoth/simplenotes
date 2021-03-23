@@ -39,6 +39,7 @@ public class Task {
   @JoinColumn(name = "task_id")
   private List<TaskHistoryEntry> taskHistoryEntries;
 
-//  @OneToMany
-//  private List<Note> notes;
+  @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true)
+  @JoinColumn(name = "task_id")
+  private List<Note> notes;
 }

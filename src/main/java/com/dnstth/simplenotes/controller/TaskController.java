@@ -40,4 +40,8 @@ public class TaskController {
     return taskService.reOpen(id);
   }
 
+  @PostMapping("/{id}/note")
+  public Task addNote(@PathVariable UUID id, @RequestBody String taskId) {
+    return taskService.addNote(id, taskId);
+  }
 }

@@ -1,10 +1,10 @@
 package com.dnstth.simplenotes.view.note;
 
-import lombok.Builder;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 @Data
-@Builder
+@NoArgsConstructor
 public class CreateNoteView {
 
   private String text;
