@@ -7,6 +7,6 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 public class CreateNoteView {
 
-  private String text;
-
+    private String title;
+    private String text;
 }

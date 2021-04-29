@@ -1,14 +1,15 @@
 package com.dnstth.simplenotes.model;
 
-import java.time.LocalDateTime;
-import java.util.List;
-import java.util.UUID;
-import javax.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.hibernate.annotations.GenericGenerator;
+
+import javax.persistence.*;
+import java.time.LocalDateTime;
+import java.util.List;
+import java.util.UUID;
 
 @Data
 @Builder
@@ -17,29 +18,34 @@ import org.hibernate.annotations.GenericGenerator;
 @Entity
 public class Task {
 
-  @Id
-  @GeneratedValue(generator = "uuid2")
-  @GenericGenerator(name = "uuid2", strategy = "org.hibernate.id.UUIDGenerator")
-  @Column
-  private UUID id;
+    @Id
+    @GeneratedValue(generator = "uuid2")
+    @GenericGenerator(name = "uuid2", strategy = "org.hibernate.id.UUIDGenerator")
+    @Column
+    private UUID id;
 
-  @Column
-  private String text;
+    @Column
+    private String title;
 
-  @Column
-  private LocalDateTime createdTime;
+    @Column
+    private String text;
 
-  @Column
-  private LocalDateTime closedTime;
+    @Column
+    private Status status;
 
-  @Column
-  private boolean closed;
+    @Column
+    private LocalDateTime createdAt;
 
-  @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true)
-  @JoinColumn(name = "task_id")
-  private List<TaskHistoryEntry> taskHistoryEntries;
+    @OneToOne
+    private Task previousVersion;
 
-  @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true)
-  @JoinColumn(name = "task_id")
-  private List<Note> notes;
+    @Column
+    private Boolean newestVersion;
+
+    @ManyToMany
+    @JoinTable(
+            name = "tasks_notes",
+            joinColumns = @JoinColumn(name = "task_id"),
+            inverseJoinColumns = @JoinColumn(name = "note_id"))
+    private List<Note> notes;
 }

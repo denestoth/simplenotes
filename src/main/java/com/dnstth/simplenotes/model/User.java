@@ -1,24 +1,23 @@
 package com.dnstth.simplenotes.model;
 
-import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.hibernate.annotations.GenericGenerator;
 
-import javax.persistence.*;
-import java.time.LocalDateTime;
-import java.util.Set;
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.Id;
 import java.util.UUID;
 
 @Data
 @Builder
-@Entity
 @NoArgsConstructor
 @AllArgsConstructor
-@JsonSerialize
-public class Note {
+@Entity
+public class User {
 
     @Id
     @GeneratedValue(generator = "uuid2")
@@ -27,20 +26,12 @@ public class Note {
     private UUID id;
 
     @Column
-    private String title;
+    private String email;
 
     @Column
-    private String text;
+    private String password;
 
     @Column
-    private LocalDateTime createdAt;
+    private String name;
 
-    @OneToOne
-    private Note previousVersion;
-
-    @Column
-    private Boolean newestVersion;
-
-    @ManyToMany(mappedBy = "notes")
-    Set<Task> tasks;
 }
