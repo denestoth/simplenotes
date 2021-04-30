@@ -10,6 +10,18 @@
 			"item": [
 				{
 					"name": "Create Task",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"var jsonData = JSON.parse(responseBody);\r",
+									"postman.setEnvironmentVariable(\"taskId\", jsonData.id);"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
 					"request": {
 						"method": "POST",
 						"header": [],
@@ -39,6 +51,18 @@
 				},
 				{
 					"name": "Update Task",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"var jsonData = JSON.parse(responseBody);\r",
+									"postman.setEnvironmentVariable(\"taskId\", jsonData.id);"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
 					"request": {
 						"method": "PUT",
 						"header": [],
@@ -52,7 +76,7 @@
 							}
 						},
 						"url": {
-							"raw": "http://localhost:8080/task/25b3c897-3111-4dc9-a201-60399cf2c83f",
+							"raw": "http://localhost:8080/task/{{taskId}}",
 							"protocol": "http",
 							"host": [
 								"localhost"
@@ -60,7 +84,7 @@
 							"port": "8080",
 							"path": [
 								"task",
-								"25b3c897-3111-4dc9-a201-60399cf2c83f"
+								"{{taskId}}"
 							]
 						}
 					},
@@ -68,6 +92,18 @@
 				},
 				{
 					"name": "Close Task",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"var jsonData = JSON.parse(responseBody);\r",
+									"postman.setEnvironmentVariable(\"taskId\", jsonData.id);"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
 					"request": {
 						"method": "PATCH",
 						"header": [],
@@ -81,7 +117,7 @@
 							}
 						},
 						"url": {
-							"raw": "http://localhost:8080/task/d82514cf-e856-4411-8c3e-821f1383539f/close",
+							"raw": "http://localhost:8080/task/{{taskId}}/close",
 							"protocol": "http",
 							"host": [
 								"localhost"
@@ -89,7 +125,7 @@
 							"port": "8080",
 							"path": [
 								"task",
-								"d82514cf-e856-4411-8c3e-821f1383539f",
+								"{{taskId}}",
 								"close"
 							]
 						}
@@ -98,6 +134,18 @@
 				},
 				{
 					"name": "Reopen Task",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"var jsonData = JSON.parse(responseBody);\r",
+									"postman.setEnvironmentVariable(\"taskId\", jsonData.id);"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
 					"request": {
 						"method": "PATCH",
 						"header": [],
@@ -111,7 +159,7 @@
 							}
 						},
 						"url": {
-							"raw": "http://localhost:8080/task/d82514cf-e856-4411-8c3e-821f1383539f/open",
+							"raw": "http://localhost:8080/task/{{taskId}}/open",
 							"protocol": "http",
 							"host": [
 								"localhost"
@@ -119,7 +167,7 @@
 							"port": "8080",
 							"path": [
 								"task",
-								"d82514cf-e856-4411-8c3e-821f1383539f",
+								"{{taskId}}",
 								"open"
 							]
 						}
@@ -219,7 +267,7 @@
 						"header": [],
 						"body": {
 							"mode": "raw",
-							"raw": "{\r\n    \"title\": \"this is THE task title\",\r\n    \"text\": \"this is THE task text\"\r\n}",
+							"raw": "{\r\n    \"title\": \"this is THE note title\",\r\n    \"text\": \"this is THE note text\"\r\n}",
 							"options": {
 								"raw": {
 									"language": "json"
