@@ -49,6 +49,7 @@ public class TaskService {
                 .createdAt(LocalDateTime.now())
                 .newestVersion(true)
                 .build();
+
         return taskTransformer.transform(taskRepository.save(task));
     }
 
@@ -143,7 +144,6 @@ public class TaskService {
     }
 
     private Note cloneNote(Note oldNote, Task newTask) {
-
         return Note.builder()
                 .title(oldNote.getTitle())
                 .text(oldNote.getText())
