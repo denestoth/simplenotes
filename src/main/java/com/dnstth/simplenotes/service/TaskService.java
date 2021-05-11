@@ -3,6 +3,8 @@ package com.dnstth.simplenotes.service;
 import com.dnstth.simplenotes.model.Note;
 import com.dnstth.simplenotes.model.Status;
 import com.dnstth.simplenotes.model.Task;
+import com.dnstth.simplenotes.model.exception.TaskNotFoundException;
+import com.dnstth.simplenotes.model.exception.UpdatingOldVersionException;
 import com.dnstth.simplenotes.repository.NoteRepository;
 import com.dnstth.simplenotes.repository.TaskRepository;
 import com.dnstth.simplenotes.view.task.CreateTaskView;
@@ -30,7 +32,7 @@ public class TaskService {
     private NoteRepository noteRepository;
 
     public TaskView get(UUID id) {
-        return taskTransformer.transform(taskRepository.findById(id).orElseThrow(() -> new RuntimeException("no task like with id of " + id)));
+        return taskTransformer.transform(taskRepository.findById(id).orElseThrow(() -> new TaskNotFoundException(id)));
     }
 
     public List<TaskView> getAll(boolean newestOnly) {
@@ -112,10 +114,10 @@ public class TaskService {
     }
 
     private Task updateOldTask(UUID id) {
-        Task task = taskRepository.findById(id).orElseThrow(() -> new RuntimeException("no task like with id of " + id));
+        Task task = taskRepository.findById(id).orElseThrow(() -> new TaskNotFoundException(id));
 
         if (!task.getNewestVersion()) {
-            throw new RuntimeException("this is not an up-to-date task");
+            throw new UpdatingOldVersionException(id);
         }
 
         task.setNewestVersion(false);
