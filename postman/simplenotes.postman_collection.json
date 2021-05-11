@@ -1,6 +1,6 @@
 {
 	"info": {
-		"_postman_id": "295c21c5-39d3-4fbf-bb1a-09fc788c0c59",
+		"_postman_id": "d694c01e-d64d-46d0-91cc-2c30696ee256",
 		"name": "simplenotes",
 		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
 	},
@@ -180,7 +180,7 @@
 						"method": "GET",
 						"header": [],
 						"url": {
-							"raw": "http://localhost:8080/task/0872dbf9-07fb-4a10-ab12-fb5a206272a1",
+							"raw": "http://localhost:8080/task/{{taskId}}",
 							"protocol": "http",
 							"host": [
 								"localhost"
@@ -188,7 +188,7 @@
 							"port": "8080",
 							"path": [
 								"task",
-								"0872dbf9-07fb-4a10-ab12-fb5a206272a1"
+								"{{taskId}}"
 							]
 						}
 					},
@@ -208,48 +208,6 @@
 							"port": "8080",
 							"path": [
 								"task"
-							]
-						}
-					},
-					"response": []
-				},
-				{
-					"name": "Reopen Task",
-					"request": {
-						"method": "PATCH",
-						"header": [],
-						"url": {
-							"raw": "http://localhost:8080/task/29e39433-7d5c-4602-ab86-a534c82f6925/open",
-							"protocol": "http",
-							"host": [
-								"localhost"
-							],
-							"port": "8080",
-							"path": [
-								"task",
-								"29e39433-7d5c-4602-ab86-a534c82f6925",
-								"open"
-							]
-						}
-					},
-					"response": []
-				},
-				{
-					"name": "Close Task",
-					"request": {
-						"method": "PATCH",
-						"header": [],
-						"url": {
-							"raw": "http://localhost:8080/task/29e39433-7d5c-4602-ab86-a534c82f6925/close",
-							"protocol": "http",
-							"host": [
-								"localhost"
-							],
-							"port": "8080",
-							"path": [
-								"task",
-								"29e39433-7d5c-4602-ab86-a534c82f6925",
-								"close"
 							]
 						}
 					},
@@ -283,6 +241,48 @@
 							"port": "8080",
 							"path": [
 								"task"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Add new note to task",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"var jsonData = JSON.parse(responseBody);\r",
+									"postman.setEnvironmentVariable(\"taskId\", jsonData.id);"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"title\": \"this is THE note title\",\r\n    \"text\": \"this is THE note text\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:8080/task/{{taskId}}/notes",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"task",
+								"{{taskId}}",
+								"notes"
 							]
 						}
 					},

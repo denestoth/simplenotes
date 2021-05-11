@@ -1,6 +1,9 @@
 package com.dnstth.simplenotes.controller;
 
+import com.dnstth.simplenotes.model.Note;
+import com.dnstth.simplenotes.service.NoteService;
 import com.dnstth.simplenotes.service.TaskService;
+import com.dnstth.simplenotes.view.note.CreateNoteView;
 import com.dnstth.simplenotes.view.task.CreateTaskView;
 import com.dnstth.simplenotes.view.task.TaskView;
 import com.dnstth.simplenotes.view.task.UpdateTaskView;
@@ -16,6 +19,9 @@ public class TaskController {
 
     @Autowired
     private TaskService taskService;
+
+    @Autowired
+    private NoteService noteService;
 
     @GetMapping("/{id}")
     public TaskView get(@PathVariable UUID id) {
@@ -45,5 +51,12 @@ public class TaskController {
     @PatchMapping("/{id}/open")
     public TaskView open(@PathVariable UUID id) {
         return taskService.reOpen(id);
+    }
+
+    /*note methods*/
+    @PostMapping("/{id}/notes")
+    public TaskView addNote(@PathVariable UUID id, @RequestBody CreateNoteView view) {
+        Note note = noteService.create(view);
+        return taskService.addNote(id, note);
     }
 }
