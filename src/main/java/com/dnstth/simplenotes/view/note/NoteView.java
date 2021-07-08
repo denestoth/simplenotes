@@ -1,8 +1,7 @@
-package com.dnstth.simplenotes.view.task;
+package com.dnstth.simplenotes.view.note;
 
 import com.dnstth.simplenotes.model.Status;
 
-import java.time.LocalDateTime;
 import java.util.Set;
 import java.util.UUID;
 
@@ -15,12 +14,12 @@ import lombok.NoArgsConstructor;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class TaskView {
+public class NoteView {
     private UUID id;
     private String title;
     private String text;
     private Status status;
     private UUID previousVersion;
-    private Set<UUID> notes;
+    private Set<UUID> tasks;
     private Set<UUID> tags;
 }

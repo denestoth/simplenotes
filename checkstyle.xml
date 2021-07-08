@@ -1,0 +1,398 @@
+<?xml version="1.0"?>
+<!DOCTYPE module PUBLIC
+          "-//Checkstyle//DTD Checkstyle Configuration 1.3//EN"
+          "https://checkstyle.org/dtds/configuration_1_3.dtd">
+
+    <!--
+
+    Details of checks can be seen here https://checkstyle.sourceforge.io/checks.html
+    
+    -->
+
+<module name = "Checker">
+    <property name="charset" value="UTF-8"/>
+
+    <property name="severity" value="warning"/>
+
+    <property name="fileExtensions" value="java"/>
+
+    <module name="SuppressionFilter">
+        <property name="file" value="./suppressions.xml"/>
+    </module>
+
+    <module name="BeforeExecutionExclusionFileFilter">
+        <property name="fileNamePattern" value="module\-info\.java$"/>
+    </module>
+
+    <!--Checks that there are no tab characters ('\t') in the source code.-->
+    <module name="FileTabCharacter">
+        <property name="eachLine" value="true"/>
+    </module>    
+
+    <!--Checks for long lines.-->
+    <module name="LineLength">
+        <property name="fileExtensions" value="java"/>
+        <property name="max" value="150"/>
+        <property name="ignorePattern" value="^package.*|^import.*|a href|href|http://|https://|ftp://"/>
+        <property name="severity" value="warning"/>
+    </module>
+
+    <module name="TreeWalker">
+        <!--Checks for multiple occurrences of the same string literal within a single file.-->
+        <module name="MultipleStringLiterals">
+            <property name="ignoreStringsRegexp" value='^(("")|("\(")|("\)")|("\[")|("\]")|("\{")|("}")|("\.")|("\*")|(":")|("/"))$'/>
+            <property name="severity" value="error"/>
+        </module>
+        
+        <!--Checks for redundant modifiers.-->
+        <module name="RedundantModifier">
+            <property name="severity" value="warning"/>
+        </module>
+        
+        <!--Checks for unused import statements.-->
+        <module name="UnusedImports">
+            <property name="severity" value="error"/>
+        </module>
+        
+        <!--Checks that the outer type name and the file name match.-->
+        <module name="OuterTypeFilename">
+            <property name="severity" value="error"/>
+        </module>
+        
+        <!--Checks cyclomatic complexity against a specified limit.-->
+        <module name="CyclomaticComplexity">
+            <property name="max" value="7"/>
+            <property name="switchBlockAsSingleDecisionPoint" value="true"/>
+            <property name="severity" value="warning"/>
+        </module>
+        
+        <!--Checks that there are no "magic numbers" where a magic number is a numeric literal that is not defined as a constant.-->
+        <module name="MagicNumber">
+            <property name="ignoreFieldDeclaration" value="true"/>
+            <property name="ignoreAnnotation" value="true"/>
+            <property name="severity" value="error"/>
+        </module>
+        
+        <!--Checks for long methods and constructors.-->
+        <module name="MethodLength">
+            <property name="max" value="100"/>
+            <property name="severity" value="warning"/>
+        </module>
+        
+        <!--Checks specified tokens text for matching an illegal pattern.-->
+        <module name="IllegalTokenText">
+            <property name="tokens" value="STRING_LITERAL, CHAR_LITERAL"/>
+            <property name="format"
+             value="\\u00(09|0(a|A)|0(c|C)|0(d|D)|22|27|5(C|c))|\\(0(10|11|12|14|15|42|47)|134)"/>
+            <property name="message" value="Consider using special escape sequence instead of octal value or Unicode escaped value."/>
+            <property name="severity" value="warning"/>
+        </module>
+        
+        <!--Restricts using Unicode escapes (such as \u221e).-->
+        <module name="AvoidEscapedUnicodeCharacters">
+            <property name="allowEscapesForControlCharacters" value="true"/>
+            <property name="allowByTailComment" value="true"/>
+            <property name="allowNonPrintableEscapes" value="true"/>
+            <property name="severity" value="warning"/>
+        </module>
+        
+        <!--Checks that there are no import statements that use the * notation.-->
+        <module name="AvoidStarImport">
+            <property name="severity" value="error"/>
+        </module>
+        
+        <!--Checks that each top-level class, interface, enum or annotation resides in a source file of its own.-->
+        <module name="OneTopLevelClass">
+            <property name="severity" value="error"/>
+        </module>
+        
+        <!--Checks that chosen statements are not line-wrapped.-->
+        <module name="NoLineWrap">
+            <property name="severity" value="error"/>
+        </module>
+        
+        <!--Checks for empty blocks.-->
+        <module name="EmptyBlock">
+            <property name="option" value="TEXT"/>
+            <property name="severity" value="error"/>
+        </module>
+        
+        <!--Checks for braces around code blocks.-->
+        <module name="NeedBraces">
+            <property name="tokens" value="LITERAL_DO, LITERAL_FOR, LITERAL_WHILE"/>
+            <property name="severity" value="error"/>
+        </module>
+        
+        <!--Checks for the placement of left curly braces ('{') for code blocks.-->
+        <module name="LeftCurly">
+              <property name="tokens" value="ANNOTATION_DEF, CLASS_DEF, CTOR_DEF, ENUM_CONSTANT_DEF, ENUM_DEF, INTERFACE_DEF, LITERAL_CASE, LITERAL_CATCH, LITERAL_DEFAULT, LITERAL_DO, LITERAL_ELSE, LITERAL_FINALLY, LITERAL_FOR, LITERAL_IF, LITERAL_SWITCH, LITERAL_SYNCHRONIZED, LITERAL_TRY, LITERAL_WHILE, METHOD_DEF, OBJBLOCK, STATIC_INIT"/>
+            <property name="severity" value="warning"/>
+        </module>
+        
+        <!--Checks the placement of right curly braces ('}') for code blocks.-->
+        <module name="RightCurly">
+            <property name="id" value="RightCurlySame"/>
+            <property name="tokens"
+             value="LITERAL_TRY, LITERAL_CATCH, LITERAL_FINALLY, LITERAL_IF, LITERAL_ELSE,
+                    LITERAL_DO"/>
+            <property name="severity" value="warning"/>
+        </module>
+        
+        <!--Checks the placement of right curly braces ('}') for code blocks.-->
+        <module name="RightCurly">
+            <property name="id" value="RightCurlyAlone"/>
+            <property name="option" value="alone"/>
+            <property name="tokens"
+             value="CLASS_DEF, METHOD_DEF, CTOR_DEF, LITERAL_FOR, LITERAL_WHILE, STATIC_INIT,
+                    INSTANCE_INIT"/>
+            <property name="severity" value="warning"/>
+        </module>
+        
+        <!--Checks that a token is surrounded by whitespace.-->
+        <module name="WhitespaceAround">
+            <message key="ws.notFollowed"
+             value="WhitespaceAround: ''{0}'' is not followed by whitespace. Empty blocks may only be represented as '{}' when not part of a multi-block statement (4.1.3)"/>
+            <message key="ws.notPreceded"
+             value="WhitespaceAround: ''{0}'' is not preceded with whitespace."/>
+            <property name="severity" value="error"/>
+        </module>
+        
+        <!--Checks that there is only one statement per line.-->
+        <module name="OneStatementPerLine">
+            <property name="severity" value="error"/>
+        </module>
+        
+        <!--Checks that each variable declaration is in its own statement and on its own line.-->
+        <module name="MultipleVariableDeclarations">
+            <property name="severity" value="error"/>
+        </module>
+        
+        <!--Checks the style of array type definitions.-->
+        <module name="ArrayTypeStyle">
+            <property name="severity" value="warning"/>
+        </module>
+        
+        <!--Checks that switch statement has a default clause.-->
+        <module name="MissingSwitchDefault">
+            <property name="severity" value="error"/>
+        </module>
+        
+        <!--Checks for fall-through in switch statements.-->
+        <module name="FallThrough">
+            <property name="severity" value="warning"/>
+        </module>
+        
+        <!--Checks that long constants are defined with an upper ell.-->
+        <module name="UpperEll">
+            <property name="severity" value="warning"/>
+        </module>
+        
+        <!--Checks that the order of modifiers conforms to the suggestions in the Java Language specification, § 8.1.1, 8.3.1, 8.4.3 and 9.4.-->
+        <module name="ModifierOrder">
+            <property name="severity" value="warning"/>
+        </module>
+        
+        <!--Checks for empty line separators after header, package, all import declarations, fields, constructors, methods, nested classes, static initializers and instance initializers.-->
+        <module name="EmptyLineSeparator">
+            <property name="allowNoEmptyLineBetweenFields" value="true"/>
+            <property name="severity" value="warning"/>
+        </module>
+        
+        <!--Checks line wrapping with separators, for DOT-->
+        <module name="SeparatorWrap">
+            <property name="id" value="SeparatorWrapDot"/>
+            <property name="tokens" value="DOT"/>
+            <property name="option" value="nl"/>
+            <property name="severity" value="warning"/>
+        </module>
+        
+        <!--Checks line wrapping with separators, for COMMA-->
+        <module name="SeparatorWrap">
+            <property name="id" value="SeparatorWrapComma"/>
+            <property name="tokens" value="COMMA"/>
+            <property name="option" value="EOL"/>
+            <property name="severity" value="warning"/>
+        </module>
+        
+        <!--Checks line wrapping with separators, for ELLIPSIS-->
+        <module name="SeparatorWrap">
+            <!-- ELLIPSIS is EOL until https://github.com/google/styleguide/issues/258 -->
+            <property name="id" value="SeparatorWrapEllipsis"/>
+            <property name="tokens" value="ELLIPSIS"/>
+            <property name="option" value="EOL"/>
+            <property name="severity" value="warning"/>
+        </module>
+        
+        <!--Checks line wrapping with separators, for ARRAY_DECLARATOR-->
+        <module name="SeparatorWrap">
+            <!-- ARRAY_DECLARATOR is EOL until https://github.com/google/styleguide/issues/259 -->
+            <property name="id" value="SeparatorWrapArrayDeclarator"/>
+            <property name="tokens" value="ARRAY_DECLARATOR"/>
+            <property name="option" value="EOL"/>
+            <property name="severity" value="warning"/>
+        </module>
+        
+        <!--Checks line wrapping with separators, for METHOD_REF-->
+        <module name="SeparatorWrap">
+            <property name="id" value="SeparatorWrapMethodRef"/>
+            <property name="tokens" value="METHOD_REF"/>
+            <property name="option" value="nl"/>
+            <property name="severity" value="warning"/>
+        </module>
+        
+        <!--Checks that package names conform to a specified pattern.-->
+        <module name="PackageName">
+            <property name="format" value="^[a-z]+(\.[a-zA-Z0-9_]*)*$"/>
+            <message key="name.invalidPattern" value="Package name ''{0}'' must match pattern ''{1}''."/>
+            <property name="severity" value="warning"/>
+        </module>
+        
+        <!--Checks that type names conform to a specified pattern.-->
+        <module name="TypeName">
+            <message key="name.invalidPattern"
+             value="Type name ''{0}'' must match pattern ''{1}''."/>
+            <property name="severity" value="error"/>
+        </module>
+        
+        <!--Checks that instance variable names conform to a specified pattern-->
+        <module name="MemberName">
+            <property name="format" value="^[a-zA-Z][a-zA-Z0-9_]*$"/>
+            <message key="name.invalidPattern" value="Member name ''{0}'' must match pattern ''{1}''."/>
+            <property name="severity" value="error"/>
+        </module>
+        
+        <!--Checks that method parameter names conform to a specified pattern.-->
+        <module name="ParameterName">
+            <property name="format" value="^[a-z]([a-zA-Z0-9_]*)?$"/>
+            <message key="name.invalidPattern" value="Parameter name ''{0}'' must match pattern ''{1}''."/>
+            <property name="severity" value="error"/>
+        </module>
+        
+        <!--Checks lambda parameter names.-->
+        <module name="LambdaParameterName">
+            <property name="format" value="^[a-z]([a-zA-Z0-9]*)?$"/>
+            <message key="name.invalidPattern" value="Lambda parameter name ''{0}'' must match pattern ''{1}''."/>
+            <property name="severity" value="error"/>
+        </module>
+        
+        <!--Checks that catch parameter names conform to a specified pattern.-->
+        <module name="CatchParameterName">
+            <property name="format" value="^[a-z]([a-zA-Z0-9_]*)?$"/>
+            <message key="name.invalidPattern" value="Catch parameter name ''{0}'' must match pattern ''{1}''."/>
+            <property name="severity" value="warning"/>
+        </module>
+        
+        <!--Checks that local, non-final variable names conform to a specified pattern.-->
+        <module name="LocalVariableName">
+            <property name="tokens" value="VARIABLE_DEF"/>
+            <property name="format" value="^[a-z]([a-zA-Z0-9_]*)?$"/>
+            <message key="name.invalidPattern" value="Local variable name ''{0}'' must match pattern ''{1}''."/>
+            <property name="severity" value="error"/>
+        </module>
+        
+        <!--Checks that there is no method finalize with zero parameters.-->
+        <module name="NoFinalizer">
+            <property name="severity" value="error"/>
+        </module>
+        
+        <!--Checks that the whitespace around the Generic tokens (angle brackets) "<" and ">" are correct to the typical convention.-->
+        <module name="GenericWhitespace">
+            <message key="ws.followed" value="GenericWhitespace ''{0}'' is followed by whitespace."/>
+            <message key="ws.preceded" value="GenericWhitespace ''{0}'' is preceded with whitespace."/>
+            <message key="ws.illegalFollow" value="GenericWhitespace ''{0}'' should followed by whitespace."/>
+            <message key="ws.notPreceded" value="GenericWhitespace ''{0}'' is not preceded with whitespace."/>
+            <property name="severity" value="warning"/>
+        </module>
+        
+        <!--Checks correct indentation of Java code.-->
+        <module name="Indentation">
+            <property name="basicOffset" value="4"/>
+            <property name="braceAdjustment" value="0"/>
+            <property name="caseIndent" value="4"/>
+            <property name="throwsIndent" value="4"/>
+            <property name="lineWrappingIndentation" value="4"/>
+            <property name="arrayInitIndent" value="4"/>
+            <property name="severity" value="warning"/>
+            <!--<property name="severity" value="error"/> maybe error, lets decide later-->
+        </module>
+        
+        <!--Checks that overloaded methods are grouped together.-->
+        <module name="OverloadMethodsDeclarationOrder">
+            <property name="severity" value="warning"/>
+        </module>
+        
+        <!--Checks that the groups of import declarations appear in the order specified by the user.-->
+        <module name="CustomImportOrder">
+            <property name="sortImportsInGroupAlphabetically" value="true"/>
+            <property name="separateLineBetweenGroups" value="true"/>
+            <property name="customImportOrderRules" value="SAME_PACKAGE(99)###SPECIAL_IMPORTS###STANDARD_JAVA_PACKAGE###THIRD_PARTY_PACKAGE###STATIC"/>
+            <property name="specialImportsRegExp" value="^(com.dnstth)\."/>
+            <property name="standardPackageRegExp" value="^(java|javax)\."/>
+            <property name="thirdPartyPackageRegExp" value="^[a-zA-Z]*\."/>
+            <property name="severity" value="error"/>
+        </module>
+        
+        <!--Checks the padding between the identifier of a method definition, constructor definition, method call, or constructor invocation; and the left parenthesis of the parameter list.-->
+        <module name="MethodParamPad">
+            <property name="severity" value="warning"/>
+        </module>
+        
+        <!--Checks that there is no whitespace before a token.-->
+        <module name="NoWhitespaceBefore">
+            <property name="tokens" value="COMMA, SEMI, POST_INC, POST_DEC, DOT, ELLIPSIS, METHOD_REF"/>
+            <property name="allowLineBreaks" value="true"/>
+            <property name="severity" value="warning"/>
+        </module>
+        
+        <!--Checks the policy on the padding of parentheses; that is whether a space is required after a left parenthesis and before a right parenthesis, or such spaces are forbidden.-->
+        <!--To Feri, with love :)-->
+        <module name="ParenPad">
+            <property name="severity" value="error"/>
+        </module>
+        
+        <!--Checks the policy on how to wrap lines on operators.-->
+        <module name="OperatorWrap">
+            <property name="option" value="NL"/>
+            <property name="tokens" value="BAND, BOR, BSR, BXOR, DIV, EQUAL, GE, GT, LAND, LE, LITERAL_INSTANCEOF, LOR,
+                    LT, MINUS, MOD, NOT_EQUAL, PLUS, QUESTION, SL, SR, STAR, METHOD_REF "/>
+            <property name="severity" value="warning"/>
+        </module>
+        
+        <!--Checks location of annotation on language elements.-->
+        <module name="AnnotationLocation">
+            <property name="id" value="AnnotationLocationMostCases"/>
+            <property name="tokens" value="CLASS_DEF, INTERFACE_DEF, ENUM_DEF, METHOD_DEF, CTOR_DEF"/>
+            <property name="severity" value="warning"/>
+        </module>
+        
+        <!--Checks that the block tag is followed by description.-->
+        <module name="NonEmptyAtclauseDescription">
+            <property name="severity" value="warning"/>
+        </module>
+        
+        <!--Checks the order of javadoc block-tags or javadoc tags.-->
+        <module name="AtclauseOrder">
+            <property name="tagOrder" value="@param, @return, @throws, @deprecated"/>
+            <property name="target" value="CLASS_DEF, INTERFACE_DEF, ENUM_DEF, METHOD_DEF, CTOR_DEF, VARIABLE_DEF"/>
+            <property name="severity" value="warning"/>
+        </module>
+        
+        <!--Checks that method names conform to a specified pattern.-->
+        <module name="MethodName">
+            <property name="format" value="^[a-z][a-zA-Z0-9_]*$"/>
+            <message key="name.invalidPattern" value="Method name ''{0}'' must match pattern ''{1}''."/>
+            <property name="severity" value="error"/>
+        </module>
+        
+        <!--Checks for empty catch blocks.-->
+        <module name="EmptyCatchBlock">
+            <property name="exceptionVariableName" value="expected"/>
+            <property name="severity" value="error"/>
+        </module>
+        
+        <!--Controls the indentation between comments and surrounding code.-->
+        <module name="CommentsIndentation">
+            <property name="severity" value="warning"/>
+        </module>
+    </module>
+</module>

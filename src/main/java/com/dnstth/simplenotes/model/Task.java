@@ -1,15 +1,22 @@
 package com.dnstth.simplenotes.model;
 
+import java.time.LocalDateTime;
+import java.util.List;
+import java.util.UUID;
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.JoinTable;
+import javax.persistence.ManyToMany;
+import javax.persistence.OneToOne;
+
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.hibernate.annotations.GenericGenerator;
-
-import javax.persistence.*;
-import java.time.LocalDateTime;
-import java.util.List;
-import java.util.UUID;
 
 @Data
 @Builder
@@ -36,6 +43,9 @@ public class Task {
     @Column
     private LocalDateTime createdAt;
 
+    @Column
+    private LocalDateTime modifiedAt;
+
     @OneToOne
     private Task previousVersion;
 
@@ -44,8 +54,15 @@ public class Task {
 
     @ManyToMany
     @JoinTable(
-            name = "tasks_notes",
-            joinColumns = @JoinColumn(name = "task_id"),
-            inverseJoinColumns = @JoinColumn(name = "note_id"))
+        name = "tasks_notes",
+        joinColumns = @JoinColumn(name = "task_id"),
+        inverseJoinColumns = @JoinColumn(name = "note_id"))
     private List<Note> notes;
+
+    @ManyToMany
+    @JoinTable(
+        name = "tasks_tags",
+        joinColumns = @JoinColumn(name = "task_id"),
+        inverseJoinColumns = @JoinColumn(name = "tag_id"))
+    private List<Tag> tags;
 }

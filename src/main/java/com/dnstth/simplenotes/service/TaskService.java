@@ -2,22 +2,24 @@ package com.dnstth.simplenotes.service;
 
 import com.dnstth.simplenotes.model.Note;
 import com.dnstth.simplenotes.model.Status;
+import com.dnstth.simplenotes.model.Tag;
 import com.dnstth.simplenotes.model.Task;
 import com.dnstth.simplenotes.model.exception.TaskNotFoundException;
 import com.dnstth.simplenotes.model.exception.UpdatingOldVersionException;
-import com.dnstth.simplenotes.repository.NoteRepository;
 import com.dnstth.simplenotes.repository.TaskRepository;
+import com.dnstth.simplenotes.service.transformer.TaskTransformer;
 import com.dnstth.simplenotes.view.task.CreateTaskView;
 import com.dnstth.simplenotes.view.task.TaskView;
 import com.dnstth.simplenotes.view.task.UpdateTaskView;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
-import java.util.Collections;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 import java.util.stream.Collectors;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
 
 @Service
 public class TaskService {
@@ -29,89 +31,134 @@ public class TaskService {
     private TaskTransformer taskTransformer;
 
     @Autowired
-    private NoteRepository noteRepository;
+    private NoteService noteService;
 
-    public TaskView get(UUID id) {
-        return taskTransformer.transform(taskRepository.findById(id).orElseThrow(() -> new TaskNotFoundException(id)));
+    @Autowired
+    private TagService tagService;
+
+    public TaskView getTaskById(UUID id) {
+        return taskTransformer.transformTaskToTaskView(taskRepository.findById(id).orElseThrow(() -> new TaskNotFoundException(id)));
     }
 
-    public List<TaskView> getAll(boolean newestOnly) {
+    public List<TaskView> getAllTasks(boolean newestOnly) {
         return newestOnly
-                ? taskRepository.findAll().stream().filter(Task::getNewestVersion).map(task -> taskTransformer.transform(task)).collect(Collectors.toList())
-                : taskRepository.findAll().stream().map(task -> taskTransformer.transform(task)).collect(Collectors.toList());
+            ?
+            taskRepository.findAll().stream().filter(Task::getNewestVersion).map(task -> taskTransformer.transformTaskToTaskView(task))
+                          .collect(Collectors.toList())
+            : taskRepository.findAll().stream().map(task -> taskTransformer.transformTaskToTaskView(task)).collect(Collectors.toList());
     }
 
-    public TaskView create(CreateTaskView view) {
+    public TaskView createNewTask(CreateTaskView view) {
         Task task = Task.builder()
-                .title(view.getTitle())
-                .text(view.getText())
-                .status(Status.CREATED)
-                .createdAt(LocalDateTime.now())
-                .newestVersion(true)
-                .build();
+                        .title(view.getTitle())
+                        .text(view.getText())
+                        .status(Status.CREATED)
+                        .createdAt(LocalDateTime.now())
+                        .modifiedAt(LocalDateTime.now())
+                        .newestVersion(true)
+                        .build();
 
-        return taskTransformer.transform(taskRepository.save(task));
+        return taskTransformer.transformTaskToTaskView(taskRepository.save(task));
     }
 
-    public TaskView update(UUID id, UpdateTaskView view) {
+    public TaskView updateTask(UUID id, UpdateTaskView view) {
         Task oldTask = updateOldTask(id);
 
         Task newTask = Task.builder()
-                .title(view.getTitle())
-                .text(view.getText())
-                .status(Status.UPDATED)
-                .createdAt(LocalDateTime.now())
-                .newestVersion(true)
-                .previousVersion(oldTask)
-                .build();
+                           .title(view.getTitle())
+                           .text(view.getText())
+                           .status(Status.UPDATED)
+                           .createdAt(oldTask.getCreatedAt())
+                           .modifiedAt(LocalDateTime.now())
+                           .previousVersion(oldTask)
+                           .newestVersion(true)
+                           .notes(List.copyOf(oldTask.getNotes()))
+                           .tags(List.copyOf(oldTask.getTags()))
+                           .build();
 
-        cloneAllNotes(oldTask, newTask);
         taskRepository.save(oldTask);
         taskRepository.save(newTask);
 
-        return taskTransformer.transform(newTask);
+        return taskTransformer.transformTaskToTaskView(newTask);
     }
 
-    public TaskView close(UUID id) {
+    public TaskView closeTask(UUID id) {
         Task oldTask = updateOldTask(id);
+        Task newTask = cloneTaskAndUpdateStatus(oldTask, Status.CLOSED);
 
-        Task newTask = cloneTask(oldTask, Status.CLOSED);
-
-        cloneAllNotes(oldTask, newTask);
         taskRepository.save(oldTask);
         taskRepository.save(newTask);
 
-        return taskTransformer.transform(newTask);
+        return taskTransformer.transformTaskToTaskView(newTask);
     }
 
-    public TaskView reOpen(UUID id) {
+    public TaskView reOpenClosedTask(UUID id) {
         Task oldTask = updateOldTask(id);
+        Task newTask = cloneTaskAndUpdateStatus(oldTask, Status.REOPENED);
 
-        Task newTask = cloneTask(oldTask, Status.REOPENED);
-
-        cloneAllNotes(oldTask, newTask);
         taskRepository.save(oldTask);
         taskRepository.save(newTask);
 
-        return taskTransformer.transform(newTask);
+        return taskTransformer.transformTaskToTaskView(newTask);
     }
 
-    public TaskView addNote(UUID id, Note note) {
+    public void deleteTask(UUID id) {
         Task oldTask = updateOldTask(id);
-        Task newTask = cloneTask(oldTask, Status.UPDATED);
 
-        cloneAllNotes(oldTask, newTask);
+        Task newTask = cloneTaskAndUpdateStatus(oldTask, Status.DELETED);
 
-        if (newTask.getNotes() == null) {
-            newTask.setNotes(Collections.singletonList(note));
-        } else {
-            newTask.getNotes().add(note);
-        }
+        taskRepository.save(oldTask);
+        taskRepository.save(newTask);
+    }
+
+    public TaskView addNewNoteToTask(UUID id, Note note) {
+        return addNoteToTask(id, note);
+    }
+
+    public TaskView addExistingNoteToTask(UUID id, UUID noteId) {
+        Note note = noteService.getOne(noteId);
+
+        return addNoteToTask(id, note);
+    }
+
+    public TaskView removeNoteFromTask(UUID id, UUID noteId) {
+        Task oldTask = updateOldTask(id);
+        Task newTask = cloneTaskAndUpdateStatus(oldTask, Status.UPDATED);
+
+        Note note = noteService.getOne(noteId);
+
+        newTask.getNotes().remove(note);
 
         taskRepository.save(oldTask);
         taskRepository.save(newTask);
 
-        return taskTransformer.transform(newTask);
+        return taskTransformer.transformTaskToTaskView(newTask);
+    }
+
+    public TaskView addTagToTask(UUID id, String tagText) {
+        Task oldTask = updateOldTask(id);
+        Task newTask = cloneTaskAndUpdateStatus(oldTask, Status.UPDATED);
+
+        Tag tag = tagService.findByTextOrCreateTag(tagText);
+        newTask.getTags().add(tag);
+
+        taskRepository.save(oldTask);
+        taskRepository.save(newTask);
+
+        return taskTransformer.transformTaskToTaskView(newTask);
+    }
+
+    public TaskView removeTagFromTask(UUID id, String tagText) {
+        Task oldTask = updateOldTask(id);
+        Task newTask = cloneTaskAndUpdateStatus(oldTask, Status.UPDATED);
+
+        Tag tag = tagService.findByTextOrCreateTag(tagText);
+        newTask.getTags().remove(tag);
+
+        taskRepository.save(oldTask);
+        taskRepository.save(newTask);
+
+        return taskTransformer.transformTaskToTaskView(newTask);
     }
 
     private Task updateOldTask(UUID id) {
@@ -125,32 +172,29 @@ public class TaskService {
         return task;
     }
 
-    private Task cloneTask(Task oldTask, Status status) {
+    private TaskView addNoteToTask(UUID id, Note note) {
+        Task oldTask = updateOldTask(id);
+        Task newTask = cloneTaskAndUpdateStatus(oldTask, Status.UPDATED);
+
+        newTask.getNotes().add(note);
+
+        taskRepository.save(oldTask);
+        taskRepository.save(newTask);
+
+        return taskTransformer.transformTaskToTaskView(newTask);
+    }
+
+    private Task cloneTaskAndUpdateStatus(Task oldTask, Status status) {
         return Task.builder()
-                .title(oldTask.getTitle())
-                .text(oldTask.getText())
-                .status(status)
-                .createdAt(LocalDateTime.now())
-                .newestVersion(true)
-                .previousVersion(oldTask)
-                .build();
-    }
-
-    private void cloneAllNotes(Task oldTask, Task newTask) {
-        oldTask.getNotes().forEach(oldNote -> oldNote.setNewestVersion(false));
-        List<Note> notes = oldTask.getNotes().stream().map(oldNote -> cloneNote(oldNote, newTask)).collect(Collectors.toList());
-        noteRepository.saveAll(notes);
-        newTask.setNotes(notes);
-    }
-
-    private Note cloneNote(Note oldNote, Task newTask) {
-        return Note.builder()
-                .title(oldNote.getTitle())
-                .text(oldNote.getText())
-                .createdAt(LocalDateTime.now())
-                .previousVersion(oldNote)
-                .newestVersion(true)
-                .tasks(Collections.singleton(newTask))
-                .build();
+                   .title(oldTask.getTitle())
+                   .text(oldTask.getText())
+                   .status(status)
+                   .createdAt(oldTask.getCreatedAt())
+                   .modifiedAt(LocalDateTime.now())
+                   .previousVersion(oldTask)
+                   .newestVersion(true)
+                   .notes(new ArrayList<>(oldTask.getNotes()))
+                   .tags(new ArrayList<>(oldTask.getTags()))
+                   .build();
     }
 }

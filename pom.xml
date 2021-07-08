@@ -15,6 +15,8 @@
 	<description>Simplenotes project</description>
 	<properties>
 		<java.version>11</java.version>
+		<checkstyle.config.location>checkstyle.xml</checkstyle.config.location>
+		<checkstyle.suppression.location>suppressions.xml</checkstyle.suppression.location>
 	</properties>
 	<dependencies>
 		<dependency>
@@ -79,6 +81,36 @@
 						</exclude>
 					</excludes>
 				</configuration>
+			</plugin>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-checkstyle-plugin</artifactId>
+				<version>3.1.2</version>
+				<executions>
+					<execution>
+						<id>checkstyle</id>
+						<phase>validate</phase>
+						<goals>
+							<goal>check</goal>
+						</goals>
+					</execution>
+				</executions>
+				<configuration>
+					<configLocation>${checkstyle.config.location}</configLocation>
+					<suppressionsLocation>${checkstyle.suppression.location}</suppressionsLocation>
+					<suppressionsFileExpression>checkstyle.suppressions.file</suppressionsFileExpression>
+					<includeTestSourceDirectory>true</includeTestSourceDirectory>
+					<violationSeverity>error</violationSeverity>
+					<failOnViolation>true</failOnViolation>
+					<logViolationsToConsole>true</logViolationsToConsole>
+				</configuration>
+				<dependencies>
+					<dependency>
+						<groupId>com.puppycrawl.tools</groupId>
+						<artifactId>checkstyle</artifactId>
+						<version>8.26</version>
+					</dependency>
+				</dependencies>
 			</plugin>
 		</plugins>
 	</build>
