@@ -1,7 +1,6 @@
 package com.dnstth.simplenotes.controller;
 
 import com.dnstth.simplenotes.model.Note;
-import com.dnstth.simplenotes.model.exception.NotImplementedException;
 import com.dnstth.simplenotes.service.NoteService;
 import com.dnstth.simplenotes.service.TaskService;
 import com.dnstth.simplenotes.view.note.CreateNoteView;

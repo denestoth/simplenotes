@@ -2,7 +2,6 @@ package com.dnstth.simplenotes.view.task;
 
 import com.dnstth.simplenotes.model.Status;
 
-import java.time.LocalDateTime;
 import java.util.Set;
 import java.util.UUID;
 
