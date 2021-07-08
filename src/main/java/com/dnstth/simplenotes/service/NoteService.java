@@ -34,10 +34,12 @@ public class NoteService {
 
     public Note create(CreateNoteView view) {
         Note note = Note.builder()
+                        .title(view.getTitle())
                         .text(view.getText())
                         .status(Status.CREATED)
                         .createdAt(LocalDateTime.now())
                         .modifiedAt(LocalDateTime.now())
+                        .newestVersion(true)
                         .build();
 
         return repository.save(note);

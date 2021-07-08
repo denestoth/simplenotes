@@ -26,14 +26,14 @@ public class NoteController {
     @Autowired
     private NoteService service;
 
-    @GetMapping("/{noteId}")
-    public Note getOne(@PathVariable UUID noteId) {
-        return service.getOne(noteId);
-    }
-
     @GetMapping()
     public List<Note> getAll() {
         return service.getAll(false);
+    }
+
+    @GetMapping("/{noteId}")
+    public Note getOne(@PathVariable UUID noteId) {
+        return service.getOne(noteId);
     }
 
     @PostMapping

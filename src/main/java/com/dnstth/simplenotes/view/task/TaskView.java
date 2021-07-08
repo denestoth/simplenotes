@@ -2,6 +2,7 @@ package com.dnstth.simplenotes.view.task;
 
 import com.dnstth.simplenotes.model.Status;
 
+import java.util.List;
 import java.util.Set;
 import java.util.UUID;
 
@@ -20,6 +21,6 @@ public class TaskView {
     private String text;
     private Status status;
     private UUID previousVersion;
-    private Set<UUID> notes;
-    private Set<UUID> tags;
+    private List<String> notes;
+    private Set<String> tags;
 }

@@ -1,6 +1,7 @@
 package com.dnstth.simplenotes.service.transformer;
 
 import com.dnstth.simplenotes.model.Note;
+import com.dnstth.simplenotes.model.Tag;
 import com.dnstth.simplenotes.model.Task;
 import com.dnstth.simplenotes.view.task.TaskView;
 
@@ -18,7 +19,8 @@ public class TaskTransformer {
                        .text(task.getText())
                        .status(task.getStatus())
                        .previousVersion(task.getPreviousVersion() != null ? task.getPreviousVersion().getId() : null)
-                       .notes(task.getNotes() != null ? task.getNotes().stream().map(Note::getId).collect(Collectors.toSet()) : null)
+                       .notes(task.getNotes() != null ? task.getNotes().stream().map(Note::getTitle).collect(Collectors.toList()) : null)
+                       .tags(task.getTags() != null ? task.getTags().stream().map(Tag::getText).collect(Collectors.toSet()) : null)
                        .build();
     }
 }
