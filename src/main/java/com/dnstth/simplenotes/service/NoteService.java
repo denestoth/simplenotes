@@ -33,7 +33,10 @@ public class NoteService {
     }
 
     public List<Note> getAllNotesByTag(String tag, boolean newestOnly) {
-        return getAll(newestOnly).stream().filter(note -> note.getTags().contains(tag)).collect(Collectors.toList());
+        return getAll(newestOnly)
+                    .stream()
+                    .filter(note -> note.getTags().stream().map(t -> t.getText()).collect(Collectors.toList()).contains(tag))
+                    .collect(Collectors.toList());
     }
 
     public Note create(CreateNoteView view) {
