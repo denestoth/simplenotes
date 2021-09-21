@@ -21,6 +21,8 @@ public class TaskTransformer {
                        .previousVersion(task.getPreviousVersion() != null ? task.getPreviousVersion().getId() : null)
                        .notes(task.getNotes() != null ? task.getNotes().stream().map(Note::getTitle).collect(Collectors.toList()) : null)
                        .tags(task.getTags() != null ? task.getTags().stream().map(Tag::getText).collect(Collectors.toSet()) : null)
+                       .createdAt(task.getCreatedAt())
+                       .modifiedAt(task.getModifiedAt())
                        .build();
     }
 }

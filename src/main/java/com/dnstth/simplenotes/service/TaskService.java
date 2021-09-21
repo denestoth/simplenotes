@@ -40,18 +40,25 @@ public class TaskService {
         return taskTransformer.transformTaskToTaskView(taskRepository.findById(id).orElseThrow(() -> new TaskNotFoundException(id)));
     }
 
-    public List<TaskView> getAllTasks(boolean newestOnly) {
-        return newestOnly
-            ?
-            taskRepository.findAll().stream().filter(Task::getNewestVersion).map(task -> taskTransformer.transformTaskToTaskView(task))
-                          .collect(Collectors.toList())
-            : taskRepository.findAll().stream().map(task -> taskTransformer.transformTaskToTaskView(task)).collect(Collectors.toList());
+    public List<TaskView> getAllTasks(boolean newestOnly, boolean openOnly) {
+        return taskRepository
+                .findAll()
+                .stream()
+                .filter(newestOnly ? task -> task.getNewestVersion() : task -> true)
+                .filter(openOnly ? task -> task.getStatus() != Status.CLOSED && task.getStatus() != Status.DELETED : task -> true)
+                .map(task -> taskTransformer.transformTaskToTaskView(task))
+                .collect(Collectors.toList());
+    }
+
+    public List<TaskView> getAllTasksByTag(String tag, boolean newestOnly, boolean openOnly) {
+        return getAllTasks(newestOnly, openOnly).stream().filter(task -> task.getTags().contains(tag)).collect(Collectors.toList());
     }
 
     public TaskView createNewTask(CreateTaskView view) {
         Task task = Task.builder()
                         .title(view.getTitle())
                         .text(view.getText())
+                        .tags(view.getTags().stream().map(txt -> tagService.findByTextOrCreateTag(txt)).collect(Collectors.toList()))
                         .status(Status.CREATED)
                         .createdAt(LocalDateTime.now())
                         .modifiedAt(LocalDateTime.now())

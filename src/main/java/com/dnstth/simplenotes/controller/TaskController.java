@@ -12,6 +12,7 @@ import java.util.List;
 import java.util.UUID;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PatchMapping;
@@ -24,6 +25,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 @RestController
 @RequestMapping("/task")
+@CrossOrigin(origins = "http://localhost:3000")
 public class TaskController {
 
     @Autowired
@@ -34,12 +36,17 @@ public class TaskController {
 
     @GetMapping
     public List<TaskView> getAll() {
-        return taskService.getAllTasks(false);
+        return taskService.getAllTasks(true, true);
     }
 
     @GetMapping("/{taskId}")
     public TaskView get(@PathVariable UUID taskId) {
         return taskService.getTaskById(taskId);
+    }
+
+    @GetMapping("/tag/{tag}")
+    public List<TaskView> getAllByTag(@PathVariable String tag) {
+        return taskService.getAllTasksByTag(tag, true, true);
     }
 
     @PostMapping

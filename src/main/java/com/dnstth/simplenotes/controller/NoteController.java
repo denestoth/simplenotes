@@ -10,6 +10,7 @@ import java.util.List;
 import java.util.UUID;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -21,6 +22,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 @RestController
 @RequestMapping("/note")
+@CrossOrigin(origins = "http://localhost:3000")
 public class NoteController {
 
     @Autowired
@@ -34,6 +36,11 @@ public class NoteController {
     @GetMapping("/{noteId}")
     public Note getOne(@PathVariable UUID noteId) {
         return service.getOne(noteId);
+    }
+
+    @GetMapping("/tag/{tag}")
+    public List<Note> getAllByTag(@PathVariable String tag) {
+        return service.getAllNotesByTag(tag, false);
     }
 
     @PostMapping

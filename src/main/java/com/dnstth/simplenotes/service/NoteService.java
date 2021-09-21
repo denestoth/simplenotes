@@ -32,6 +32,10 @@ public class NoteService {
             : repository.findAll();
     }
 
+    public List<Note> getAllNotesByTag(String tag, boolean newestOnly) {
+        return getAll(newestOnly).stream().filter(note -> note.getTags().contains(tag)).collect(Collectors.toList());
+    }
+
     public Note create(CreateNoteView view) {
         Note note = Note.builder()
                         .title(view.getTitle())
